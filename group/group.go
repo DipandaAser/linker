@@ -63,8 +63,8 @@ func CreateGroup(id, service string) (*Group, error) {
 	return &theGroup, nil
 }
 
-// GetGroup
-func GetGroup(id string) (*Group, error) {
+// GetGroupByID
+func GetGroupByID(id string) (*Group, error) {
 
 	theGroup := &Group{}
 	filter := bson.M{"_id": id}
@@ -92,7 +92,7 @@ func GetGroupByShortCode(shortCode string) (*Group, error) {
 // IncrementMessage
 func IncrementMessage(id string) error {
 
-	g, err := GetGroup(id)
+	g, err := GetGroupByID(id)
 	if err != nil {
 		return err
 	}

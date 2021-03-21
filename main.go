@@ -38,7 +38,7 @@ func main() {
 		log.Fatal("Can't setup mongodb")
 	}
 
-	// ─── WE REFRESH THE CONNECTION EACH 10MINS ──────────────────────────────────────
+	// ─── WE REFRESH THE MONGO CONNECTION EACH 10MINS ──────────────────────────────────────
 	ticker := time.NewTicker(time.Minute * 10)
 	defer ticker.Stop()
 	go func() {
