@@ -40,7 +40,7 @@ func SetService(name, url, authKey, status string) (*Service, error) {
 	// we check service existence, to update or create a new service
 	isServiceAlreadyExist := true
 	filter := bson.M{"Name": name}
-	err := DB.Collection(ServiceCollectionName).FindOne(MongoCtx, filter).Decode(theService)
+	err := DB.Collection(ServiceCollectionName).FindOne(*MongoCtx, filter).Decode(theService)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			isServiceAlreadyExist = false
@@ -62,7 +62,7 @@ func SetService(name, url, authKey, status string) (*Service, error) {
 		theService.AuthKey = authKey
 		theService.Status = status
 
-		_, err = DB.Collection(ServiceCollectionName).UpdateOne(MongoCtx, filter, updates)
+		_, err = DB.Collection(ServiceCollectionName).UpdateOne(*MongoCtx, filter, updates)
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func SetService(name, url, authKey, status string) (*Service, error) {
 			Status:  status,
 		}
 
-		_, err := DB.Collection(ServiceCollectionName).InsertOne(MongoCtx, myService)
+		_, err := DB.Collection(ServiceCollectionName).InsertOne(*MongoCtx, myService)
 		if err != nil {
 			return nil, err
 		}
@@ -92,7 +92,7 @@ func GetService(serviceName string) (*Service, error) {
 
 	service := &Service{}
 	filter := bson.M{"Name": serviceName}
-	err := DB.Collection(ServiceCollectionName).FindOne(MongoCtx, filter).Decode(service)
+	err := DB.Collection(ServiceCollectionName).FindOne(*MongoCtx, filter).Decode(service)
 	if err != nil {
 		return nil, err
 	}

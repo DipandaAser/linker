@@ -54,7 +54,7 @@ func CreateGroup(id, service string) (*Group, error) {
 		CreatedAt:    string(t),
 	}
 
-	_, err = DB.Collection(GroupCollectionName).InsertOne(MongoCtx, theGroup)
+	_, err = DB.Collection(GroupCollectionName).InsertOne(*MongoCtx, theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func GetGroupByID(id string) (*Group, error) {
 
 	theGroup := &Group{}
 	filter := bson.M{"_id": id}
-	err := DB.Collection(GroupCollectionName).FindOne(MongoCtx, filter).Decode(theGroup)
+	err := DB.Collection(GroupCollectionName).FindOne(*MongoCtx, filter).Decode(theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func GetGroupByShortCode(shortCode string) (*Group, error) {
 
 	theGroup := &Group{}
 	filter := bson.M{"ShortCode": shortCode}
-	err := DB.Collection(GroupCollectionName).FindOne(MongoCtx, filter).Decode(theGroup)
+	err := DB.Collection(GroupCollectionName).FindOne(*MongoCtx, filter).Decode(theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (g *Group) IncrementMessage() error {
 
 	filter := bson.M{"_id": g.ID}
 	updates := bson.M{"$inc": bson.M{"TotalMessage": 1}}
-	result := DB.Collection(GroupCollectionName).FindOneAndUpdate(MongoCtx, filter, updates)
+	result := DB.Collection(GroupCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
 	if err := result.Err(); err != nil {
 		return err
 	}

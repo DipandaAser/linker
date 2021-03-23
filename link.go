@@ -41,7 +41,7 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 		UpdatedAt:    string(t),
 	}
 
-	_, err := DB.Collection(LinkCollectionName).InsertOne(MongoCtx, lnk)
+	_, err := DB.Collection(LinkCollectionName).InsertOne(*MongoCtx, lnk)
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +52,13 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 func GetLinksByGroupID(id string) ([]Link, error) {
 
 	filter := bson.M{"GroupsID": id}
-	cur, err := DB.Collection(LinkCollectionName).Find(MongoCtx, filter)
+	cur, err := DB.Collection(LinkCollectionName).Find(*MongoCtx, filter)
 	if err != nil {
 		return nil, err
 	}
 
 	links := []Link{}
-	err = cur.All(MongoCtx, &links)
+	err = cur.All(*MongoCtx, &links)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (lnk *Link) IncrementMessage() error {
 
 	filter := bson.M{"_id": lnk.ID}
 	updates := bson.M{"$inc": bson.M{"TotalMessage": 1}}
-	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(MongoCtx, filter, updates)
+	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
 	if err := result.Err(); err != nil {
 		return err
 	}

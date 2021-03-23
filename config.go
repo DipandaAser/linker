@@ -22,7 +22,14 @@ var HeaderAuthKey = "authKey"
 var Config = &ProjectSettings{}
 
 // MongoCtx is the mongo context
-var MongoCtx = context.TODO()
+var MongoCtx *context.Context
 
-// LocalDB is the mongo db
+// DB is the mongo db
 var DB *mongo.Database
+
+// Init init the linker package
+func Init(config *ProjectSettings, ctx *context.Context, db *mongo.Database) {
+	Config = config
+	MongoCtx = ctx
+	DB = db
+}
