@@ -1,8 +1,7 @@
-package service
+package linker
 
 import (
 	"errors"
-	"github.com/DipandaAser/linker/config"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,8 +12,8 @@ const (
 	StatusOnline = "online"
 	// StatusOffline
 	StatusOffline = "offline"
-	// CollectionName
-	CollectionName = "Services"
+	// ServiceCollectionName
+	ServiceCollectionName = "Services"
 )
 
 var (
@@ -34,17 +33,19 @@ type Service struct {
 }
 
 // SetService
-func SetService(name, url, authKey, status string) error {
+func SetService(name, url, authKey, status string) (*Service, error) {
+
+	theService := &Service{}
 
 	// we check service existence, to update or create a new service
 	isServiceAlreadyExist := true
 	filter := bson.M{"Name": name}
-	result := config.DB.Collection(CollectionName).FindOne(config.MongoCtx, filter)
-	if err := result.Err(); err != nil {
+	err := DB.Collection(ServiceCollectionName).FindOne(MongoCtx, filter).Decode(theService)
+	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			isServiceAlreadyExist = false
 		} else {
-			return err
+			return nil, err
 		}
 	}
 
@@ -57,10 +58,13 @@ func SetService(name, url, authKey, status string) error {
 				"Status":  status,
 			},
 		}
+		theService.Url = url
+		theService.AuthKey = authKey
+		theService.Status = status
 
-		_, err := config.DB.Collection(CollectionName).UpdateOne(config.MongoCtx, filter, updates)
+		_, err = DB.Collection(ServiceCollectionName).UpdateOne(MongoCtx, filter, updates)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 	} else {
@@ -73,13 +77,14 @@ func SetService(name, url, authKey, status string) error {
 			Status:  status,
 		}
 
-		_, err := config.DB.Collection(CollectionName).InsertOne(config.MongoCtx, myService)
+		_, err := DB.Collection(ServiceCollectionName).InsertOne(MongoCtx, myService)
 		if err != nil {
-			return err
+			return nil, err
 		}
+		theService = &myService
 	}
 
-	return nil
+	return theService, nil
 }
 
 // GetService
@@ -87,7 +92,7 @@ func GetService(serviceName string) (*Service, error) {
 
 	service := &Service{}
 	filter := bson.M{"Name": serviceName}
-	err := config.DB.Collection(CollectionName).FindOne(config.MongoCtx, filter).Decode(service)
+	err := DB.Collection(ServiceCollectionName).FindOne(MongoCtx, filter).Decode(service)
 	if err != nil {
 		return nil, err
 	}

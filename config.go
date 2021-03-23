@@ -1,4 +1,4 @@
-package config
+package linker
 
 import (
 	"context"
@@ -16,8 +16,10 @@ type ProjectSettings struct {
 	AuthKey     string
 }
 
-// ProjectConfig holds info of project settings
-var ProjectConfig = &ProjectSettings{}
+var HeaderAuthKey = "authKey"
+
+// Config holds info of project settings
+var Config = &ProjectSettings{}
 
 // MongoCtx is the mongo context
 var MongoCtx = context.TODO()

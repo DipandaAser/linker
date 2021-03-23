@@ -1,16 +1,14 @@
-package link
+package linker
 
 import (
-	"github.com/DipandaAser/linker/config"
-	"github.com/DipandaAser/linker/group"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
 )
 
 const (
-	// CollectionName
-	CollectionName = "Links"
+	// LinkCollectionName
+	LinkCollectionName = "Links"
 )
 
 type Link struct {
@@ -27,7 +25,7 @@ type Link struct {
 func CreateLink(GroupsID [2]string) (*Link, error) {
 
 	for _, gID := range GroupsID {
-		_, err := group.GetGroupByID(gID)
+		_, err := GetGroupByID(gID)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +41,7 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 		UpdatedAt:    string(t),
 	}
 
-	_, err := config.DB.Collection(CollectionName).InsertOne(config.MongoCtx, lnk)
+	_, err := DB.Collection(LinkCollectionName).InsertOne(MongoCtx, lnk)
 	if err != nil {
 		return nil, err
 	}
@@ -54,13 +52,13 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 func GetLinksByGroupID(id string) ([]Link, error) {
 
 	filter := bson.M{"GroupsID": id}
-	cur, err := config.DB.Collection(CollectionName).Find(config.MongoCtx, filter)
+	cur, err := DB.Collection(LinkCollectionName).Find(MongoCtx, filter)
 	if err != nil {
 		return nil, err
 	}
 
 	links := []Link{}
-	err = cur.All(config.MongoCtx, &links)
+	err = cur.All(MongoCtx, &links)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +71,7 @@ func (lnk *Link) IncrementMessage() error {
 
 	filter := bson.M{"_id": lnk.ID}
 	updates := bson.M{"$inc": bson.M{"TotalMessage": 1}}
-	result := config.DB.Collection(CollectionName).FindOneAndUpdate(config.MongoCtx, filter, updates)
+	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(MongoCtx, filter, updates)
 	if err := result.Err(); err != nil {
 		return err
 	}

@@ -1,15 +1,14 @@
-package group
+package linker
 
 import (
-	"github.com/DipandaAser/linker/config"
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
 )
 
 const (
-	// CollectionName
-	CollectionName = "Groups"
+	// GroupCollectionName
+	GroupCollectionName = "Groups"
 )
 
 // Group
@@ -55,7 +54,7 @@ func CreateGroup(id, service string) (*Group, error) {
 		CreatedAt:    string(t),
 	}
 
-	_, err = config.DB.Collection(CollectionName).InsertOne(config.MongoCtx, theGroup)
+	_, err = DB.Collection(GroupCollectionName).InsertOne(MongoCtx, theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +67,7 @@ func GetGroupByID(id string) (*Group, error) {
 
 	theGroup := &Group{}
 	filter := bson.M{"_id": id}
-	err := config.DB.Collection(CollectionName).FindOne(config.MongoCtx, filter).Decode(theGroup)
+	err := DB.Collection(GroupCollectionName).FindOne(MongoCtx, filter).Decode(theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +80,7 @@ func GetGroupByShortCode(shortCode string) (*Group, error) {
 
 	theGroup := &Group{}
 	filter := bson.M{"ShortCode": shortCode}
-	err := config.DB.Collection(CollectionName).FindOne(config.MongoCtx, filter).Decode(theGroup)
+	err := DB.Collection(GroupCollectionName).FindOne(MongoCtx, filter).Decode(theGroup)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +104,7 @@ func (g *Group) IncrementMessage() error {
 
 	filter := bson.M{"_id": g.ID}
 	updates := bson.M{"$inc": bson.M{"TotalMessage": 1}}
-	result := config.DB.Collection(CollectionName).FindOneAndUpdate(config.MongoCtx, filter, updates)
+	result := DB.Collection(GroupCollectionName).FindOneAndUpdate(MongoCtx, filter, updates)
 	if err := result.Err(); err != nil {
 		return err
 	}
