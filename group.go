@@ -89,17 +89,6 @@ func GetGroupByShortCode(shortCode string) (*Group, error) {
 }
 
 // IncrementMessage
-func IncrementMessage(id string) error {
-
-	g, err := GetGroupByID(id)
-	if err != nil {
-		return err
-	}
-
-	return g.IncrementMessage()
-}
-
-// IncrementMessage
 func (g *Group) IncrementMessage() error {
 
 	filter := bson.M{"_id": g.ID}
