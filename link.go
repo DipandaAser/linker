@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	// LinkCollectionName
+	// LinkCollectionName is the name of the collections in the DB
 	LinkCollectionName = "Links"
 )
 
@@ -21,7 +21,7 @@ type Link struct {
 	UpdatedAt    string `bson:"UpdatedAt"`
 }
 
-//CreateLink
+//CreateLink create a new Link
 func CreateLink(GroupsID [2]string) (*Link, error) {
 
 	for _, gID := range GroupsID {
@@ -49,6 +49,7 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 	return lnk, nil
 }
 
+//GetLinksByGroupID get all the links where a group is linked by his given id
 func GetLinksByGroupID(id string) ([]Link, error) {
 
 	filter := bson.M{"GroupsID": id}
@@ -66,7 +67,7 @@ func GetLinksByGroupID(id string) ([]Link, error) {
 	return links, nil
 }
 
-// IncrementMessage
+// IncrementMessage increment the number of message shared
 func (lnk *Link) IncrementMessage() error {
 
 	filter := bson.M{"_id": lnk.ID}

@@ -8,16 +8,16 @@ import (
 )
 
 const (
-	// StatusOnline
+	// StatusOnline represent a status when the webhook of a service is available
 	StatusOnline = "online"
-	// StatusOffline
+	// StatusOffline represent a status when the webhook of a service is not available
 	StatusOffline = "offline"
-	// ServiceCollectionName
+	// ServiceCollectionName is the name of the collections in the DB
 	ServiceCollectionName = "Services"
 )
 
 var (
-	// ErrServiceOffline
+	// ErrServiceOffline when a service is not available
 	ErrServiceOffline = errors.New("service is offline")
 )
 
@@ -32,7 +32,7 @@ type Service struct {
 	Status  string `json:"Status" bson:"Status"` // online, offline
 }
 
-// SetService
+// SetService set a platform service details to allow another service to connect with him
 func SetService(name, url, authKey, status string) (*Service, error) {
 
 	theService := &Service{}
@@ -87,7 +87,7 @@ func SetService(name, url, authKey, status string) (*Service, error) {
 	return theService, nil
 }
 
-// GetService
+// GetService get a service from DB
 func GetService(serviceName string) (*Service, error) {
 
 	service := &Service{}

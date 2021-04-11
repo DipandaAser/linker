@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	// GroupCollectionName
+	// GroupCollectionName is the name of the collections in the DB
 	GroupCollectionName = "Groups"
 )
 
-// Group
+// Group represent a group or a channel
 type Group struct {
 
 	//ID represent the group ID according to the Service,
@@ -34,7 +34,7 @@ type Group struct {
 	CreatedAt string `bson:"CreatedAt"`
 }
 
-// CreateGroup
+// CreateGroup create a ne group
 func CreateGroup(id, service string) (*Group, error) {
 
 	// We generate a ShortCode an make sure that we dont have duplicate ShortCode
@@ -62,7 +62,7 @@ func CreateGroup(id, service string) (*Group, error) {
 	return &theGroup, nil
 }
 
-// GetGroupByID
+// GetGroupByID get a group by his id
 func GetGroupByID(id string) (*Group, error) {
 
 	theGroup := &Group{}
@@ -75,7 +75,7 @@ func GetGroupByID(id string) (*Group, error) {
 	return theGroup, nil
 }
 
-// GetGroupByShortCode
+// GetGroupByShortCode get a group by his shortcode
 func GetGroupByShortCode(shortCode string) (*Group, error) {
 
 	theGroup := &Group{}
@@ -88,7 +88,7 @@ func GetGroupByShortCode(shortCode string) (*Group, error) {
 	return theGroup, nil
 }
 
-// IncrementMessage
+// IncrementMessage increment the number of message received
 func (g *Group) IncrementMessage() error {
 
 	filter := bson.M{"_id": g.ID}
