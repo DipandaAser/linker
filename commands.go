@@ -22,6 +22,13 @@ var commands = []Command{
 		" \nThe message of the group/channel yg64y will be share on iuh78. The reverse is not possible." +
 		" \nPlease use this command only in private message with the bot" +
 		" \nDon't use in a group because anyone can view your Linker Groups Code"},
+	{Text: "stop", Description: "Stop an active link or diffusion group/channel, " +
+		"Example: " +
+		"\n\t - Stop a specified link or diffusion" +
+		"\n\t stop yg64y" +
+		"\n" +
+		"\n\t - Stop all active link or diffusion" +
+		"\n\t stop all"},
 	{Text: "list", Description: "List all active links and diffusion of the group/channel"},
 }
 
