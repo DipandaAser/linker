@@ -1,7 +1,7 @@
 package linker
 
 import (
-	"github.com/google/uuid"
+	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
 )
@@ -36,7 +36,7 @@ func CreateDiffusion(broadcaster, receiver string) (*Diffusion, error) {
 
 	t, _ := time.Now().UTC().MarshalText()
 	lnk := &Diffusion{
-		ID:           uuid.Must(uuid.NewRandom()).String(),
+		ID:           uniuri.NewLen(5),
 		Broadcaster:  broadcaster,
 		Receiver:     receiver,
 		Active:       true,

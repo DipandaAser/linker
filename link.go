@@ -1,7 +1,7 @@
 package linker
 
 import (
-	"github.com/google/uuid"
+	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
 )
@@ -33,7 +33,7 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 
 	t, _ := time.Now().UTC().MarshalText()
 	lnk := &Link{
-		ID:           uuid.Must(uuid.NewRandom()).String(),
+		ID:           uniuri.NewLen(5),
 		GroupsID:     GroupsID,
 		Active:       true,
 		TotalMessage: 0,
