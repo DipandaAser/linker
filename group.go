@@ -1,6 +1,7 @@
 package linker
 
 import (
+	"fmt"
 	"github.com/dchest/uniuri"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
@@ -97,5 +98,19 @@ func (g *Group) IncrementMessage() error {
 	if err := result.Err(); err != nil {
 		return err
 	}
+	return nil
+}
+
+//StopLinksAndDiffusions stop all active links and diffusions
+func (g *Group) StopLinksAndDiffusions() error {
+
+	diffErr := stopDiffusion(g.ID)
+
+	lnkErr := stopLinks(g.ID)
+
+	if diffErr != nil && lnkErr != nil {
+		return fmt.Errorf("An error occur: %v, \n%v", diffErr, lnkErr)
+	}
+
 	return nil
 }
