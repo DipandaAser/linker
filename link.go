@@ -49,10 +49,10 @@ func CreateLink(GroupsID [2]string) (*Link, error) {
 	return lnk, nil
 }
 
-//GetLinksByGroupID get all the links where a group is linked by his given id
-func GetLinksByGroupID(id string) ([]Link, error) {
+//GetLinksByGroupID get all the links where a group is in
+func GetLinksByGroupID(groupId string) ([]Link, error) {
 
-	filter := bson.M{"GroupsID": id}
+	filter := bson.M{"GroupsID": groupId}
 	cur, err := DB.Collection(LinkCollectionName).Find(*MongoCtx, filter)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,83 @@ func GetLinksByGroupID(id string) ([]Link, error) {
 	return links, nil
 }
 
+//GetLinkByID get a link identify by the given id
+func GetLinkByID(id string) (*Link, error) {
+
+	lnk := &Link{}
+	filter := bson.M{"_id": id}
+	err := DB.Collection(LinkCollectionName).FindOne(*MongoCtx, filter).Decode(lnk)
+	if err != nil {
+		return nil, err
+	}
+
+	return lnk, nil
+}
+
 // IncrementMessage increment the number of message shared
 func (lnk *Link) IncrementMessage() error {
 
 	filter := bson.M{"_id": lnk.ID}
 	updates := bson.M{"$inc": bson.M{"TotalMessage": 1}}
+	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
+	if err := result.Err(); err != nil {
+		return err
+	}
+	lnk.TotalMessage++
+	return nil
+}
+
+//StopLink set the Active field to false
+func (lnk *Link) StopLink() error {
+
+	err := stopLink(lnk.ID)
+	if err != nil {
+		return err
+	}
+	lnk.Active = false
+	return nil
+}
+
+func stopLink(id string) error {
+
+	filter := bson.M{"_id": id}
+	updates := bson.M{"$set": bson.M{"Active": false}}
+	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
+	if err := result.Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func stopLinks(groupId string) error {
+
+	update := bson.M{"$set": bson.M{
+		"Active": false,
+	}}
+	filter := bson.M{"GroupsID": groupId}
+	_, err := DB.Collection(LinkCollectionName).UpdateMany(*MongoCtx, filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//StartLink set the Active field to true
+func (lnk *Link) StartLink() error {
+
+	err := startLink(lnk.ID)
+	if err != nil {
+		return err
+	}
+	lnk.Active = true
+	return nil
+}
+
+func startLink(id string) error {
+
+	filter := bson.M{"_id": id}
+	updates := bson.M{"$set": bson.M{"Active": true}}
 	result := DB.Collection(LinkCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
 	if err := result.Err(); err != nil {
 		return err

@@ -53,6 +53,27 @@ func CreateDiffusion(broadcaster, receiver string) (*Diffusion, error) {
 	return lnk, nil
 }
 
+//GetDiffusionsByGroupID get all the diffusion where the Broadcaster or the Receiver is the group given id
+func GetDiffusionsByGroupID(id string) ([]Diffusion, error) {
+
+	filter := bson.M{"$or": bson.A{
+		bson.M{"Broadcaster": id},
+		bson.M{"Receiver": id},
+	}}
+	cur, err := DB.Collection(DiffusionCollectionName).Find(*MongoCtx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	links := []Diffusion{}
+	err = cur.All(*MongoCtx, &links)
+	if err != nil {
+		return nil, err
+	}
+
+	return links, nil
+}
+
 //GetDiffusionsByBroadcaster get all the diffusion where the broadcaster is the group given id
 func GetDiffusionsByBroadcaster(id string) ([]Diffusion, error) {
 
@@ -89,11 +110,11 @@ func GetDiffusionsByReceiver(id string) ([]Diffusion, error) {
 	return links, nil
 }
 
-//GetDiffusionByBroadcasterAndReceiver get a diffusion where the broadcaster and receiver is the group given id
-func GetDiffusionByBroadcasterAndReceiver(broadcaster, receiver string) (*Diffusion, error) {
+//GetDiffusionById get a diffusion identify by the  given id
+func GetDiffusionById(id string) (*Diffusion, error) {
 
 	diff := &Diffusion{}
-	filter := bson.M{"Broadcaster": broadcaster, "Receiver": receiver}
+	filter := bson.M{"_id": id}
 	err := DB.Collection(DiffusionCollectionName).FindOne(*MongoCtx, filter).Decode(diff)
 	if err != nil {
 		return nil, err
@@ -111,5 +132,69 @@ func (dif *Diffusion) IncrementMessage() error {
 	if err := result.Err(); err != nil {
 		return err
 	}
+	return nil
+}
+
+//StopDiffusion set the Active field to false
+func (dif *Diffusion) StopDiffusion() error {
+
+	err := stopDiffusion(dif.ID)
+	if err != nil {
+		return err
+	}
+	dif.Active = false
+	return nil
+}
+
+//StartDiffusion set the Active field to true
+func (dif *Diffusion) StartDiffusion() error {
+
+	err := startDiffusion(dif.ID)
+	if err != nil {
+		return err
+	}
+	dif.Active = true
+	return nil
+}
+
+func startDiffusion(id string) error {
+
+	filter := bson.M{"_id": id}
+	updates := bson.M{"$set": bson.M{"Active": true}}
+	result := DB.Collection(DiffusionCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
+	if err := result.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func stopDiffusion(id string) error {
+
+	filter := bson.M{"_id": id}
+	updates := bson.M{"$set": bson.M{"Active": false}}
+	result := DB.Collection(DiffusionCollectionName).FindOneAndUpdate(*MongoCtx, filter, updates)
+	if err := result.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func stopDiffusions(groupId string) error {
+
+	update := bson.M{"$set": bson.M{
+		"Active": false,
+	}}
+
+	diffusionFilter := bson.M{"$or": bson.A{
+		bson.M{"Broadcaster": groupId},
+		bson.M{"Receiver": groupId},
+	}}
+	_, err := DB.Collection(DiffusionCollectionName).UpdateMany(*MongoCtx, diffusionFilter, update)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
