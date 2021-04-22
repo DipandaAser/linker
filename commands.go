@@ -10,9 +10,9 @@ var commands = []Command{
 		" \nOnly admin can use this command"},
 	{Text: "list", Description: "List all links and diffusion of the group/channel" +
 		" \nOnly admin can use this command"},
-	{Text: "link", Option: "", Description: "Link two groups/channels," +
+	{Text: "link", Option: "<group/channel_id> <group/channel_id>", Description: "Link two groups/channels," +
 		" \nPlease use this command only in private message with the bot"},
-	{Text: "diffuse", Description: "Diffuse/broadcast the first Group/Channel in the second Group/Channel," +
+	{Text: "diffuse", Option: "<group/channel_id> <group/channel_id>", Description: "Diffuse/broadcast the first Group/Channel in the second Group/Channel," +
 		" \nPlease use this command only in private message with the bot"},
 	{Text: "start", Option: "<link_or_diffusion_id>", Description: "Start an existing stopped link or diffusion" +
 		" \nPlease use this command only in private message with the bot"},
