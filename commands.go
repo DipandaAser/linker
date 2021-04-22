@@ -16,12 +16,15 @@ var commands = []Command{
 		" \nonly the message of the first group/channel will be share on the second group/channel." +
 		" \n\tExample: diffuse yg64y iuh78" +
 		" \nPlease use this command only in private message with the bot"},
+	{Text: "start", Description: "Start an active link or diffusion group/channel, " +
+		"Example: " +
+		"\n\t\tstart yg64y"},
 	{Text: "stop", Description: "Stop an active link or diffusion group/channel, " +
 		"Example: " +
 		"\n\t- Stop a specified link or diffusion" +
 		"\n\t\tstop yg64y" +
 		"\n" +
-		"\n\t- Stop all active link or diffusion" +
+		"\n\t- Stop all active link or diffusion NB: use this one on a group" +
 		"\n\t\tstop all"},
 	{Text: "list", Description: "List all active links and diffusion of the group/channel"},
 }
