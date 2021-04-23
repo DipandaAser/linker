@@ -67,6 +67,22 @@ func GetLinksByGroupID(groupId string) ([]Link, error) {
 	return links, nil
 }
 
+//GetLinksByGroupsID get the links where contains the specified groups
+func GetLinksByGroupsID(groupsId [2]string) (*Link, error) {
+
+	filter := bson.M{"GroupsID": bson.M{
+		"$all": bson.A{groupsId[0], groupsId[1]},
+	}}
+
+	lnk := &Link{}
+	err := DB.Collection(LinkCollectionName).FindOne(*MongoCtx, filter).Decode(lnk)
+	if err != nil {
+		return nil, err
+	}
+
+	return lnk, nil
+}
+
 //GetLinkByID get a link identify by the given id
 func GetLinkByID(id string) (*Link, error) {
 
