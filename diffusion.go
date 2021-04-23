@@ -110,6 +110,23 @@ func GetDiffusionsByReceiver(id string) ([]Diffusion, error) {
 	return links, nil
 }
 
+//GetDiffusionsByBroadcasterAndReceiver get all the diffusion where the broadcaster and receiver are the group givens id
+func GetDiffusionsByBroadcasterAndReceiver(broadcasterID string, receiverID string) (*Diffusion, error) {
+
+	filter := bson.M{"$or": bson.A{
+		bson.M{"Broadcaster": broadcasterID},
+		bson.M{"Receiver": receiverID},
+	}}
+
+	diff := &Diffusion{}
+	err := DB.Collection(DiffusionCollectionName).FindOne(*MongoCtx, filter).Decode(diff)
+	if err != nil {
+		return nil, err
+	}
+
+	return diff, nil
+}
+
 //GetDiffusionById get a diffusion identify by the  given id
 func GetDiffusionById(id string) (*Diffusion, error) {
 
