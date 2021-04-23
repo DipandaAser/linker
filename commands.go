@@ -8,7 +8,7 @@ var commands = []Command{
 	{Text: "help", Description: "Display bot help."},
 	{Text: "config", Description: "Get actual group/channel Linker Code" +
 		" \nOnly admin can use this command"},
-	{Text: "list", Description: "List all links and diffusion of the group/channel" +
+	{Text: "list", Description: "Get actual group/channel links and diffusion list" +
 		" \nOnly admin can use this command"},
 	{Text: "link", Option: "<group/channel_id> <group/channel_id>", Description: "Link two groups/channels," +
 		" \nPlease use this command only in private message with the bot"},
